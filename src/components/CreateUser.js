@@ -9,11 +9,10 @@ const CreateUser=({username, email, onChange, onCreate})=>{
             } value={username} />
             <input type="text" name="email" placeholder='이메일' onChange={onChange
             } value={email} />
-
             <button onClick={onCreate}>등록</button>
         </div>
         
     )
 }
 
-export default CreateUser;
+export default React.memo(CreateUser);
