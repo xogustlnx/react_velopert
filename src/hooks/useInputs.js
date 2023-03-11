@@ -13,7 +13,6 @@ const reducer=(state,{type, name, value, initialForm})=>{
 
 const useInputs=(initialForm)=>{
     const [state, dispatch] = useReducer(reducer, initialForm)
-
     const onChange = useCallback(e=>{
         const {name, value} = e.target;
         dispatch({
@@ -33,4 +32,4 @@ const useInputs=(initialForm)=>{
     return [state, onChange, reset]
 }
 
-export default useInputs
+export default useInputs;
