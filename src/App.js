@@ -4,6 +4,7 @@ import InputSample from './InputSample';
 import CreateUser from './components/CreateUser';
 import UserList from './components/UserList';
 import { useEffect, useRef, useState, useMemo, useCallback, useReducer} from 'react';
+import useInputs from './hooks/useInputs';
 
 const countActiveUsers=(users)=>{
   console.log('활성 사용자 수 세는중')
@@ -11,7 +12,6 @@ const countActiveUsers=(users)=>{
 }
 
 const initialState = {
-  inputs : {username: '', email: ''},
   users: [
     {
       id: 1,
@@ -35,19 +35,10 @@ const initialState = {
 
 };
 
-const reducer=(state, {type, name, value, user, id})=>{
+const reducer=(state, {type, user, id})=>{
   switch (type){
-    case 'CHANGE_INPUT':
-      return {
-        ...state,
-        inputs:{
-          ...state.inputs,
-          [name]: value
-        }
-      }
     case 'CREATE_USER':
       return{
-          inputs: initialState.inputs,
           users: state.users.concat(user)
       }
     case 'TOGGLE_USER':
@@ -63,27 +54,26 @@ const reducer=(state, {type, name, value, user, id})=>{
         users: state.users.filter(user=>
           user.id!==id)
       }
-  }
 
-  return state;
+    default:
+    return state;
+  }
 }
 
+
 function App() {
+
+  const [{username, email}, onChange, reset] =useInputs({
+    username : '',
+    email : ''
+  })
 
   const [state, dispatch] = useReducer(reducer, initialState)
   const nextId = useRef(4);
   const {users} = state;
-  const {username, email} = state.inputs;
   const count = useMemo(()=>countActiveUsers(users),[users]);
 
-  const onChange = useCallback(e=>{
-    const {name, value} = e.target;
-    dispatch({
-      type: 'CHANGE_INPUT',
-      name,
-      value
-    })
-  },[]);
+
 
   const onCreate = useCallback(()=>{
     dispatch({
@@ -94,6 +84,7 @@ function App() {
         email,
       }
     })
+    reset();
     nextId.current++;
   },[username,email]);
 
